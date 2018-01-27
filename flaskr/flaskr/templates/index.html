@@ -1,24 +1,81 @@
 <!DOCTYPE html>
-{% load static %}
-
 <html>
-	<head>
-		<link rel="stylesheet" type="text/css" href="{% static 'admin/css/main.css' %}" />
-		<title> ClassConnect </title>
-	</head>
+<head>
+  <meta charset="utf-8">
+  <title>ClassConnect</title>
+  <link rel="stylesheet" href="https://bootswatch.com/4/yeti/bootstrap.min.css">
+</head>
 
-	<body>		
-		{% block content %}
-		<div id="prompt" class="block">
-			  	
+<body class="text-center">
+  <script>
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '393143551111732',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v2.11'
+      });
+
+      FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+      });
+
+    };
+
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+
+     /*
+     function statusChangeCallback(response){
+       if(response.status === 'connected'){
+         console.log('Logged in and authenticated');
+       } else {
+         console.log('Not authenticated');
+       }
+     }
+     */
+
+     function checkLoginState() {
+       FB.getLoginStatus(function(response) {
+        // statusChangeCallback(response);
+       });
+     }
+
+  </script>
+
+  <fb:login-button
+    scope="public_profile,email,user_friends"
+    onlogin="checkLoginState();">
+  </fb:login-button>
+
+  <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">ClassConnect</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link" href="#">Features</a>
+            <a class="nav-link" href="#">Contact</a>
+          </nav>
+        </div>
+      </header>
+    </div>
+
+    <div id="prompt" class="block">
+
 		<form action="{{ url_for('add_entry') }}" method=post class=add-entry>
 			<p style="font-size:12pt">What class are you looking for? (ex. CSCI 0170) </p>
 			<dd><input type=text size=30 name=class_search>
 			<button type="submit" id="submit">
 			Connect</button>
 		</form>
-		
+
 		</div>
-		{% endblock %}
-	</body>
+
+</body>
 </html>
