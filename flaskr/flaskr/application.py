@@ -2,7 +2,6 @@ from flask import Flask, flash, redirect, render_template, request, session, jso
 import sqlite3
 from flask_session import Session
 from tempfile import mkdtemp
-from helpers import login_required
 from werkzeug.exceptions import default_exceptions
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -53,13 +52,19 @@ def init_db():
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == "POST":
-        return render_template("courses.html")
+        return render_template("addclasses.html")
     else:
         return render_template("index.html")
 
 @app.route("/addclasses", methods=['GET', 'POST'])
-def courses():
+def addclasses():
     if request.method == "POST":
-        return render_template("addclasses.html")
+        name = request.form.get('user_name')
+        classes = request.form.get('classes_taken')
+        query_db("insert into students (name) values (?)", [name])
+        for course in classes.replace(" ", "").split(","):
+            query_db("insert into courses (title, student) values (?, ?)", [course, name])
+        print(query_db("select * from students"))
+        return render_template("index.html")
     else:
         return render_template("addclasses.html")
