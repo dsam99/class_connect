@@ -61,6 +61,8 @@ def addclasses():
     if request.method == "POST":
         name = request.form.get('user_name')
         classes = request.form.get('classes_taken')
+        print(name)
+        print(classes)
         query_db("insert into students (name) values (?)", [name])
         for course in classes.replace(" ", "").split(","):
             query_db("insert into courses (title, student) values (?, ?)", [course, name])

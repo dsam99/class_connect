@@ -8,5 +8,5 @@ drop table if exists courses;
 create table courses (
   id integer primary key autoincrement,
   title text not null,
-  student integer not null
+  student text not null
 );
