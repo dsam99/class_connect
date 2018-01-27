@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{% static 'admin/css/main.css' %}" />
+		<title> Add Classes </title>
+	</head>
+
+	<body>  	
+		
+		<form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+			<div>
+				<p style="font-size:12pt"> Enter your name: (ex. Shriram Krishnamurthi) </p>
+				<input type=text size=30 name=user_name>
+				<p style="font-size:12pt"> Enter the list of classes you have taken, with commas in between (ex. CSCI 0190, CSCI 0150): </p>
+				<textarea name=classes_taken rows=5 cols=40></textarea>
+		 		<input type=submit value=Enter>
+		 	</div>
+		</form>
+
+	</body>
+</html>

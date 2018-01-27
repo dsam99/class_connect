@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="{% static 'admin/css/main.css' %}" />
+		<title> ClassConnect </title>
+	</head>
+
+	<body>		
+		{% block content %}
+		<div id="prompt" class="block">
+			  	
+		<form action="{{ url_for('add_entry') }}" method=post class=add-entry>
+			<p style="font-size:12pt">What class are you looking for? (ex. CSCI 0170) </p>
+			<dd><input type=text size=30 name=class_search>
+			<button type="submit" id="submit">
+			Connect</button>
+		</form>
+		
+		</div>
+		{% endblock %}
+	</body>
+</html>
