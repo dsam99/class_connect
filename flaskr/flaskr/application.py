@@ -49,7 +49,7 @@ def initdb_command():
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == "POST":
-        return render_template("addclasses.html")
+        return render_template("index.html")
     else:
         return render_template("index.html")
 
@@ -57,12 +57,23 @@ def index():
 def addclasses():
     if request.method == "POST":
         name = request.form.get('user_name')
+        if not name:
+            return redirect("/addclasses")
         classes = request.form.get('classes_taken')
+        if not classes:
+            return redirect("/addclasses")
         query_db("insert into students (name) values (?)", [name])
-        #for course in classes.replace(" ", "").split(","):
-            #query_db("insert into courses ('title', 'student') values (?, ?)", [course, name])
-
+        for course in classes.replace(" ", "").split(","):
+            query_db("insert into courses ('title', 'student') values (?, ?)", [course, name])
         print(query_db("select * from students"))
+        print(query_db("select * from courses"))
         return redirect("/")
     else:
         return render_template("addclasses.html")
+
+@app.route("/classSearch")
+def classSearch():
+    course = request.form.get("class_search")
+    students = query_db("select * from courses where student = ?", [course])
+    return render_template("classSearch.html", students=students, course=course)
+
