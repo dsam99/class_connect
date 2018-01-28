@@ -7,18 +7,6 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 # Configure application
 app = Flask(__name__)
-@app.after_request
-def after_request(response):
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
-    return response
-
-# Configure session to use filesystem
-app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
 
 # Database
 DATABASE = 'database.db'
@@ -48,6 +36,12 @@ def init_db():
             db.cursor().executescript(f.read())
         db.commit()
 
+@app.cli.command('initdb')
+def initdb_command():
+    """Initializes the database."""
+    init_db()
+    print('Initialized the database.')
+
 # Routes
 @app.route("/", methods=['GET', 'POST'])
 def index():
@@ -61,12 +55,12 @@ def addclasses():
     if request.method == "POST":
         name = request.form.get('user_name')
         classes = request.form.get('classes_taken')
-        print(name)
-        print(classes)
         query_db("insert into students (name) values (?)", [name])
         for course in classes.replace(" ", "").split(","):
             query_db("insert into courses (title, student) values (?, ?)", [course, name])
-        print(query_db("select * from students"))
+        for student in query_db("select * from students"):
+            print(student)
+        print(query_db("select * from courses"))
         return render_template("index.html")
     else:
         return render_template("addclasses.html")
