@@ -3,10 +3,18 @@
 {% block title %}Add Courses{% endblock %}
 
 {% block main %}
-    <form action="/" method="post">
-        <div class="form-group">
-            <input autofocus class="form-control" name="course" placeholder="Course Title" type="text"/>
-        </div>
-        <button class="btn btn-danger" type="submit">Connect</button>
+    <img src="brownlogo.png" style="position:absolute; width:25%; margin-top:5%; opacity:0.1;">
+	<div class="cover-container d-flex h-100 p-3 mx-auto flex-column" style="background-color:#A52A2A;width:556.56px;">
+
+		<form action="/addCourses" method="post">
+			<div style="text-align:center;">
+				<h3 style="margin-top:20%"> Enter your name:</p>
+				<input type=text size=30 name="name" placeholder="Ex: Shriram Krishnamurthi">
+				<h5 style="margin-top:20%"> Enter the list of classes you have taken, <br>with commas in between: </p>
+				<textarea name="courses" rows=5 cols=40 placeholder="Ex: CSCI 0190, CSCI 0150"></textarea>
+				<input class="btn btn-danger" style="display:block; margin-left:auto; margin-right:auto" type=submit>
+		 	</div>
+		</form>
+	</div>
     </form>
 {% endblock %}

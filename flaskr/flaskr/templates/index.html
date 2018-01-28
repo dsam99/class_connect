@@ -3,7 +3,49 @@
 {% block title %}Course{% endblock %}
 
 {% block main %}
-   <script>
+
+
+  <img src="brownlogo.png" style="position:absolute; width:25%; margin-top:5%; opacity:0.1;">
+  <div class="cover-container d-flex h-100 p-3 mx-auto flex-column" style="background-color: #A52A2A">
+
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">ClassConnect</h3>
+          <nav class="nav nav-masthead justify-content-center">
+            {% if session.user_id %}
+                <li><a id="logout" href="#" onclick="logout()">Logout</a><li>
+            {% else %}
+                    <fb:login-button id="login-button"
+                  scope="public_profile,email,user_friends"
+                  onlogin="checkLoginState();">
+                </fb:login-button>
+            {% endif %}
+          </nav>
+        </div>
+      </header>
+     <div  class="inner cover" id="prompt" class="block">
+    <form action="/" method="post">
+            <div class="form-group">
+                <input class="col-4" autofocus class="form-control" name="course" placeholder="Course Title" type="text"/>
+            </div>
+            <button class="btn btn-danger m-2" type="submit">Connect</button>
+        </form>
+        </div>
+      <div id="welcome" style="width:556.56px; margin-bottom:50%">
+        <h1>Welcome to</h1>
+        <img src="static/logo.png">
+        {% for student in students %}
+            <p>{{ student[0] }}</p>
+        {% endfor %}
+      </div>
+
+      <div>
+          <a href="/addCourses">Add Courses</a></a>
+      </div>
+
+  </div>
+
+<script>
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '393143551111732',
@@ -40,7 +82,8 @@
      function setElements(isLoggedIn){
        if(isLoggedIn){
             FB.api('/me', {fields: 'id'}, function(response) {
-                    window.location = '/addCourses?id=' + response.id;
+                $.getJSON("/login", {id: response.id}, function(data, textStatus, jqXHR) {
+                });
             });
        }
      }
@@ -48,43 +91,10 @@
      function logout() {
        FB.logout(function(response){
          setElements(false);
+         $.getJSON("/logout", {}, function(data, textStatus, jqXHR) {
+                });
        });
      }
   </script>
-
-  <img src="brownlogo.png" style="position:absolute; width:25%; margin-top:5%; opacity:0.1;">
-  <div class="cover-container d-flex h-100 p-3 mx-auto flex-column" style="background-color: #A52A2A">
-
-      <header class="masthead mb-auto">
-        <div class="inner">
-          <h3 class="masthead-brand">ClassConnect</h3>
-          <nav class="nav nav-masthead justify-content-center">
-            <li><a id="logout" href="#" onclick="logout()">Logout</a><li>
-            <fb:login-button id="login-button"
-              scope="public_profile,email,user_friends"
-              onlogin="checkLoginState();">
-            </fb:login-button>
-          </nav>
-        </div>
-      </header>
-     <div  class="inner cover" id="prompt" class="block">
-    <form action="/" method="post">
-            <div class="form-group">
-                <input class="col-4" autofocus class="form-control" name="course" placeholder="Course Title" type="text"/>
-            </div>
-            <button class="btn btn-danger m-2" type="submit">Connect</button>
-        </form>
-        </div>
-      <div id="welcome" style="width:556.56px; margin-bottom:50%">
-        <h1>Welcome to</h1>
-        <img src="static/logo.png">
-        {% for student in students %}
-            <p>{{ student[0] }}</p>
-        {% endfor %}
-      </div>
-
-  </div>
-
-
 
 {% endblock %}
