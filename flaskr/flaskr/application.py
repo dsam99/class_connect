@@ -1,11 +1,6 @@
-from flask import Flask, flash, redirect, render_template, request, session, jsonify, url_for, g
+from flask import Flask, redirect, render_template, request, g
 import sqlite3
-from flask_session import Session
-from tempfile import mkdtemp
-from werkzeug.exceptions import default_exceptions
-from werkzeug.security import check_password_hash, generate_password_hash
 
-# Configure application
 app = Flask(__name__)
 
 # Database
@@ -41,7 +36,6 @@ def init_db():
 
 @app.cli.command('initdb')
 def initdb_command():
-    """Initializes the database."""
     init_db()
     print('Initialized the database.')
 
@@ -49,31 +43,28 @@ def initdb_command():
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == "POST":
-        return render_template("index.html")
+        course = request.form.get("course")
+        students = query_db("SELECT name FROM students LEFT JOIN courses ON students.id=courses.student WHERE courses.title=?", [course])
+        print(students)
+        return render_template("index.html", students=students, course=course)
     else:
         return render_template("index.html")
 
-@app.route("/addclasses", methods=['GET', 'POST'])
-def addclasses():
+@app.route("/addCourses", methods=['GET', 'POST'])
+def addCourses():
     if request.method == "POST":
-        name = request.form.get('user_name')
+        name = request.form.get('username')
         if not name:
-            return redirect("/addclasses")
-        classes = request.form.get('classes_taken')
-        if not classes:
-            return redirect("/addclasses")
-        query_db("insert into students (name) values (?)", [name])
+            return redirect("/addCourses")
+        courses = request.form.get('courses')
+        if not courses:
+            return redirect("/addCourses")
+        query_db("INSERT INTO students (name) VALUES (?)", [name])
+        studentId = query_db("SELECT id FROM students WHERE name=?", [name])
         for course in classes.replace(" ", "").split(","):
-            query_db("insert into courses ('title', 'student') values (?, ?)", [course, name])
-        print(query_db("select * from students"))
-        print(query_db("select * from courses"))
+            query_db("INSERT INTO courses (title, student) VALUES (?, ?)", [course, studentId])
+        print(query_db("SELECT * FROM students"))
+        print(query_db("SELECT * FROM courses"))
         return redirect("/")
     else:
-        return render_template("addclasses.html")
-
-@app.route("/classSearch")
-def classSearch():
-    course = request.form.get("class_search")
-    students = query_db("select * from courses where student = ?", [course])
-    return render_template("classSearch.html", students=students, course=course)
-
+        return render_template("addCourses.html")

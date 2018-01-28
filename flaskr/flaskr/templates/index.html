@@ -1,23 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>ClassConnect</title>
-  <!-- Bootstrap core CSS -->
-   <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-   <!-- Custom styles for this template -->
-   <link href="https://getbootstrap.com/docs/4.0/examples/cover/cover.css" rel="stylesheet">
-   <style>
-    #welcome, #prompt {
-      display: none;
-    }
-   </style>
+{% extends "layout.html" %}
 
-</head>
+{% block title %}Course{% endblock %}
 
-<body class="text-center" style="background-color:white">
-  <script>
+{% block main %}
+   <script>
     window.fbAsyncInit = function() {
       FB.init({
         appId      : '393143551111732',
@@ -36,7 +22,6 @@
        js.src = "https://connect.facebook.net/en_US/sdk.js";
        fjs.parentNode.insertBefore(js, fjs);
      }(document, 'script', 'facebook-jssdk'));
-
      function statusChangeCallback(response){
        if(response.status === 'connected'){
          console.log('Logged in and authenticated');
@@ -46,7 +31,6 @@
          setElements(false);
        }
      }
-
      function checkLoginState() {
        FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
@@ -55,15 +39,9 @@
 
      function setElements(isLoggedIn){
        if(isLoggedIn){
-         document.getElementById('prompt').style.display = 'block';
-         document.getElementById('login-button').style.display = 'none';
-         document.getElementById('logout').style.display = 'block';
-         document.getElementById('welcome').style.display = 'none';
-       } else {
-         document.getElementById('prompt').style.display = 'none';
-         document.getElementById('login-button').style.display = 'block';
-         document.getElementById('welcome').style.display = 'block';
-         document.getElementById('logout').style.display = 'none';
+            FB.api('/me', {fields: 'id'}, function(response) {
+                    window.location = '/addCourses?id=' + response.id;
+            });
        }
      }
 
@@ -72,9 +50,9 @@
          setElements(false);
        });
      }
-
   </script>
 
+  <img src="brownlogo.png" style="position:absolute; width:25%; margin-top:5%; opacity:0.1;">
   <div class="cover-container d-flex h-100 p-3 mx-auto flex-column" style="background-color: #A52A2A">
 
       <header class="masthead mb-auto">
@@ -89,22 +67,24 @@
           </nav>
         </div>
       </header>
-
-
-      <div class="inner cover" id="prompt" class="block">
-    		<form style="margin-bottom: 120%" action="{{ url_for('index') }}" method=post class=index>
-    			<input class="btn" style="height:40px" type=text size=50 name=class_search placeholder="What class are you looking for? (ex. CSCI 0170)">
-    			<button class="btn"style="height:40px" type="submit" id="submit">Connect</button>
-    		</form>
-        <a href="addclasses.html">Add your classes!</a>
-      </div>
-
+     <div  class="inner cover" id="prompt" class="block">
+    <form action="/" method="post">
+            <div class="form-group">
+                <input class="col-4" autofocus class="form-control" name="course" placeholder="Course Title" type="text"/>
+            </div>
+            <button class="btn btn-danger m-2" type="submit">Connect</button>
+        </form>
+        </div>
       <div id="welcome" style="width:556.56px; margin-bottom:50%">
         <h1>Welcome to</h1>
-        <img src="logo.png">
+        <img src="static/logo.png">
+        {% for student in students %}
+            <p>{{ student[0] }}</p>
+        {% endfor %}
       </div>
 
   </div>
 
-</body>
-</html>
+
+
+{% endblock %}
