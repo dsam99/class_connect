@@ -64,7 +64,6 @@ def logout():
 def login():
     print("\n\n" + request.args.get("id"))
     session["user_id"] = request.args.get("id")
-    print(session["user_id"])
     return render_template("/")
 
 # Routes
@@ -72,7 +71,7 @@ def login():
 def index():
     if request.method == "POST":
         course = request.form.get("course")
-        students = query_db("SELECT name FROM students LEFT JOIN courses ON students.id=courses.student WHERE courses.title=?", [course])
+        students = query_db("SELECT name, facebook FROM students LEFT JOIN courses ON students.id=courses.student WHERE courses.title=?", [course])
         print(students)
         return render_template("index.html", students=students, course=course)
     else:
@@ -88,7 +87,7 @@ def addCourses():
         courses = request.form.get('courses')
         if not courses:
             return redirect("/addCourses")
-        query_db("insert into students (name) values (?)", [name])
+        query_db("insert into students (name, facebook) values (?, ?)", [name, "https://facebook.com/" + name.replace(" ", ".")])
         studentId = query_db("select id from students where name=?", [name])
         print(studentId[0][0])
         for course in courses.replace(" ", "").split(","):

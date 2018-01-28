@@ -6,7 +6,7 @@
 
 
   <img src="brownlogo.png" style="position:absolute; width:25%; margin-top:5%; opacity:0.1;">
-  <div class="cover-container d-flex h-100 p-3 mx-auto flex-column" style="background-color: #A52A2A">
+  <div class="cover-container d-flex p-3 mx-auto flex-column" style="background-color: #A52A2A">
 
       <header class="masthead mb-auto">
         <div class="inner">
@@ -34,8 +34,9 @@
       <div id="welcome" style="width:556.56px; margin-bottom:50%">
         <h1>Welcome to</h1>
         <img src="static/logo.png">
+        <h3>{{ course }}</h3>
         {% for student in students %}
-            <p>{{ student[0] }}</p>
+                <a href={{ student[1] }} target="_blank"><p>{{ student[0] }}</p></a>
         {% endfor %}
       </div>
 
@@ -89,11 +90,8 @@
      }
 
      function logout() {
-       FB.logout(function(response){
-         setElements(false);
          $.getJSON("/logout", {}, function(data, textStatus, jqXHR) {
                 });
-       });
      }
   </script>
 
