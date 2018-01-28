@@ -24,10 +24,13 @@ def close_connection(exception):
         db.close()
 
 def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
+    with app.app_context():
+        db = get_db()
+        cur = get_db().execute(query, args)
+        rv = cur.fetchall()
+        db.commit()
+        cur.close()
+        return (rv[0] if rv else None) if one else rv
 
 def init_db():
     with app.app_context():
@@ -56,11 +59,10 @@ def addclasses():
         name = request.form.get('user_name')
         classes = request.form.get('classes_taken')
         query_db("insert into students (name) values (?)", [name])
-        for course in classes.replace(" ", "").split(","):
-            query_db("insert into courses (title, student) values (?, ?)", [course, name])
-        for student in query_db("select * from students"):
-            print(student)
-        print(query_db("select * from courses"))
-        return render_template("index.html")
+        #for course in classes.replace(" ", "").split(","):
+            #query_db("insert into courses ('title', 'student') values (?, ?)", [course, name])
+
+        print(query_db("select * from students"))
+        return redirect("/")
     else:
         return render_template("addclasses.html")
